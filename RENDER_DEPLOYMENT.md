@@ -9,7 +9,7 @@
 ## 📋 Services Overview
 
 ### Backend Service (`traceless-backend`)
-- **Runtime**: Python 3
+- **Runtime**: Python
 - **Build**: `cd backend && pip install -r requirements.txt`
 - **Start**: `cd backend && gunicorn --bind 0.0.0.0:$PORT app:app`
 - **Environment Variables**:
