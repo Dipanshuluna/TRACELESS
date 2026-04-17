@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     environment:
       VW_FRONTEND_ORIGIN: http://localhost:5173
-      VW_ATTACHED_CONTAINER_NAME: firefox-container
+      VW_ATTACHED_CONTAINER_NAME: fc9cebd2adf757ae2135d9299b30fb0fe051db52c486c1f9b72e5d99779f46c2
       VW_BROWSER_URL: http://localhost:3000
       VW_DOWNLOAD_DIR: /config/downloads
       VW_END_SESSION_STOPS_CONTAINER: "false"

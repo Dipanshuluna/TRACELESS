@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000/api";
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5001/api";
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
@@ -34,6 +34,12 @@ export const api = {
   },
   listFiles(sessionId) {
     return request(`/files/${sessionId}`);
+  },
+  saveFile(sessionId, filename, content) {
+    return request(`/files/${sessionId}`, {
+      method: "POST",
+      body: JSON.stringify({ filename, content })
+    });
   },
   endSession(sessionId) {
     return request(`/end-session/${sessionId}`, { method: "DELETE" });

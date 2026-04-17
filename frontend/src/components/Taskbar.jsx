@@ -1,6 +1,7 @@
 const APP_META = {
   browser: "Browser",
-  files: "Files"
+  files: "Files",
+  editor: "Editor"
 };
 
 export function Taskbar({ session, health, windows, onEnd, onToggleWindow }) {

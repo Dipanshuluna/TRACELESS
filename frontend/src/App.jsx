@@ -5,8 +5,9 @@ import { SessionLauncher } from "./components/SessionLauncher";
 
 function createDefaultWindows() {
   return {
-    browser: { open: false, minimized: false, x: 70, y: 24, z: 2 },
-    files: { open: false, minimized: false, x: 760, y: 90, z: 3 }
+    browser: { open: false, minimized: false, x: 70, y: 24, z: 2, width: 860, height: 620 },
+    files: { open: false, minimized: false, x: 760, y: 90, z: 3, width: 560, height: 640 },
+    editor: { open: false, minimized: false, x: 180, y: 120, z: 4, width: 640, height: 520 }
   };
 }
 
@@ -22,6 +23,7 @@ export default function App() {
   const [browserPreviewTitle, setBrowserPreviewTitle] = useState("");
   const [windows, setWindows] = useState(createDefaultWindows);
   const dragRef = useRef(null);
+  const resizeRef = useRef(null);
   const eventSourceRef = useRef(null);
   const zRef = useRef(10);
 
@@ -76,6 +78,10 @@ export default function App() {
     }));
   };
 
+  const openEditor = () => {
+    openWindow("editor");
+  };
+
   const minimizeWindow = (windowId) => {
     setWindows((current) => ({
       ...current,
@@ -118,6 +124,20 @@ export default function App() {
       windowId,
       offsetX: event.clientX - windowState.x,
       offsetY: event.clientY - windowState.y
+    };
+  };
+
+  const beginResize = (windowId, event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const windowState = windows[windowId];
+    focusWindow(windowId);
+    resizeRef.current = {
+      windowId,
+      startX: event.clientX,
+      startY: event.clientY,
+      startWidth: windowState.width,
+      startHeight: windowState.height
     };
   };
 
@@ -201,6 +221,10 @@ export default function App() {
     openWindow("browser");
   };
 
+  const saveEditorFile = async (sessionId, filename, content) => {
+    await api.saveFile(sessionId, filename, content);
+  };
+
   useEffect(() => {
     const handleMove = (event) => {
       if (!dragRef.current) return;
@@ -215,14 +239,30 @@ export default function App() {
       }));
     };
 
+    const handleResizeMove = (event) => {
+      if (!resizeRef.current) return;
+      const { windowId, startX, startY, startWidth, startHeight } = resizeRef.current;
+      setWindows((current) => ({
+        ...current,
+        [windowId]: {
+          ...current[windowId],
+          width: Math.max(windowId === "browser" ? 720 : 420, startWidth + event.clientX - startX),
+          height: Math.max(windowId === "browser" ? 460 : 520, startHeight + event.clientY - startY)
+        }
+      }));
+    };
+
     const handleUp = () => {
       dragRef.current = null;
+      resizeRef.current = null;
     };
 
     window.addEventListener("pointermove", handleMove);
+    window.addEventListener("pointermove", handleResizeMove);
     window.addEventListener("pointerup", handleUp);
     return () => {
       window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointermove", handleResizeMove);
       window.removeEventListener("pointerup", handleUp);
     };
   }, []);
@@ -247,15 +287,22 @@ export default function App() {
       windows={windows}
       openBrowser={openWorkspaceBrowser}
       openFiles={() => openWindow("files")}
+      openEditor={openEditor}
       closeBrowser={() => closeWindow("browser")}
       closeFiles={() => closeWindow("files")}
+      closeEditor={() => closeWindow("editor")}
       minimizeBrowser={() => minimizeWindow("browser")}
       minimizeFiles={() => minimizeWindow("files")}
+      minimizeEditor={() => minimizeWindow("editor")}
       focusWindow={focusWindow}
       beginDrag={beginDrag}
+      beginResize={beginResize}
       toggleTaskbarWindow={toggleTaskbarWindow}
       openFileInBrowser={openFileInBrowser}
       openWorkspaceBrowser={openWorkspaceBrowser}
+      saveEditorFile={saveEditorFile}
+      sessionId={session.session_id}
+      onEditorSaveComplete={() => refreshFiles()}
     />
   );
 }

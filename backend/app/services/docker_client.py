@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import io
+import os
+import posixpath
 import shlex
 import tarfile
 import time
@@ -128,6 +130,26 @@ fi
                 raise FileNotFoundError(path)
             data = extracted.read()
         return iter([data]), len(data)
+
+    def write_file_bytes(self, container_id: str, path: str, data: bytes) -> None:
+        container = self.inspect_container(container_id)
+        dir_path = posixpath.dirname(path)
+        file_name = posixpath.basename(path)
+        if not dir_path:
+            raise ValueError("invalid save path")
+        self.exec_shell(container_id, f"mkdir -p {shlex.quote(dir_path)}")
+
+        tar_buffer = io.BytesIO()
+        with tarfile.open(fileobj=tar_buffer, mode="w") as tar:
+            tarinfo = tarfile.TarInfo(name=file_name)
+            tarinfo.size = len(data)
+            tarinfo.mtime = time.time()
+            tar.addfile(tarinfo, io.BytesIO(data))
+        tar_buffer.seek(0)
+
+        success = container.put_archive(dir_path, tar_buffer)
+        if not success:
+            raise RuntimeError(f"failed to write file to container at {path}")
 
     def ping(self) -> bool:
         try:

@@ -41,6 +41,20 @@ def list_files(session_id: str):
     return jsonify({"files": files})
 
 
+@api.post("/files/<session_id>")
+def save_file(session_id: str):
+    payload = request.get_json(silent=True) or {}
+    filename = payload.get("filename")
+    content = payload.get("content")
+    if not isinstance(filename, str) or not filename.strip():
+        raise BadRequest("filename must be a non-empty string")
+    if not isinstance(content, str):
+        raise BadRequest("content must be a string")
+
+    file_info = _manager().save_file(session_id, filename, content)
+    return jsonify({"file": file_info})
+
+
 @api.get("/file/<session_id>/<path:filename>")
 def get_file(session_id: str, filename: str):
     stream, content_type, headers = _manager().stream_file(session_id, filename)

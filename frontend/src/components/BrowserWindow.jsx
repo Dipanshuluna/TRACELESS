@@ -7,6 +7,7 @@ export function BrowserWindow({
   onMinimize,
   onFocus,
   onHeaderPointerDown,
+  onResizePointerDown,
   style
 }) {
   const activeUrl = previewUrl || browserUrl;
@@ -46,6 +47,11 @@ export function BrowserWindow({
       <div className="browser-frame">
         <iframe src={activeUrl} title="Volatile workspace browser window" />
       </div>
+      <div
+        className="window-resize-handle"
+        onPointerDown={onResizePointerDown}
+        aria-hidden="true"
+      />
     </section>
   );
 }

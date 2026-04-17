@@ -100,6 +100,24 @@ class SessionManager:
             for item in files
         ]
 
+    def save_file(self, session_id: str, filename: str, content: str) -> dict:
+        session = self._require_session(session_id)
+        safe_path = self._safe_container_path(filename)
+        if not safe_path:
+            raise ValueError("filename must not be empty")
+
+        absolute_path = f"{self.settings.download_dir}/{safe_path}".replace("//", "/")
+        data = content.encode("utf-8")
+        self.gateway.write_file_bytes(session.container_id, absolute_path, data)
+
+        now = datetime.now(timezone.utc)
+        return {
+            "name": PurePosixPath(safe_path).name,
+            "path": safe_path,
+            "size_bytes": len(data),
+            "modified_at": now.isoformat(),
+        }
+
     def stream_file(self, session_id: str, filename: str):
         session = self._require_session(session_id)
         safe_path = self._safe_container_path(filename)
