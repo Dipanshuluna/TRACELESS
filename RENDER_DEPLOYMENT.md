@@ -27,7 +27,9 @@
 ### Firefox Container (`firefox-container`)
 - **Runtime**: Docker
 - **Image**: Custom Firefox container
-- **Port**: 3000 (internal)
+- **Port**: Automatically assigned by Render (typically 10000+)
+- **Environment Variables**:
+  - `WEB_AUDIO`: "1"
 
 ## ⚠️ Important Notes
 
@@ -50,11 +52,13 @@ After deployment, update these URLs in your Render dashboard:
 ```bash
 # Backend service environment variables
 VW_FRONTEND_ORIGIN=https://your-frontend-app.onrender.com
-VW_BROWSER_URL=https://your-firefox-container.onrender.com
+VW_BROWSER_URL=https://your-firefox-container-app.onrender.com
 
 # Frontend service environment variables
 VITE_API_BASE_URL=https://your-backend-app.onrender.com/api
 ```
+
+**Note**: Render automatically assigns ports and URLs to your services. You'll need to update the `VW_BROWSER_URL` with the actual URL that Render assigns to your Firefox container service.
 
 ## 🔧 Manual Deployment Steps
 

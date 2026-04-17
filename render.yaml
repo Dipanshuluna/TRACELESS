@@ -42,9 +42,6 @@ services:
     envVars:
       - key: WEB_AUDIO
         value: "1"
-    ports:
-      - type: web
-        port: 3000
     plan: starter
 
 # Environment variables that apply to all services
