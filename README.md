@@ -2,6 +2,22 @@
 
 Volatile Workspace is a full-stack mini operating system for temporary, container-aware browsing and file handling. In this localhost setup, the app attaches to one existing Firefox container, exposes its web UI inside React, reads downloads from inside the container, and ends access when the timer expires.
 
+## 🚀 Quick Deploy (FREE)
+
+**Deploy for FREE** using Vercel + Railway + Fly.io:
+
+```bash
+# Run the automated deployment script
+./deploy-free.sh
+```
+
+This deploys:
+- ✅ **Frontend**: Vercel (FREE)
+- ✅ **Backend**: Railway (FREE) 
+- ✅ **Firefox**: Fly.io (FREE)
+
+**Cost**: $0/month | **Limits**: See `ALTERNATIVE_DEPLOYMENT.md`
+
 ## Architecture
 
 - `frontend/`: React desktop shell with session launcher, taskbar timer, embedded browser window, and virtual file viewer.
