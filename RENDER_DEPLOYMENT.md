@@ -23,6 +23,7 @@
 - **Start**: `cd frontend && npx serve -s dist -l $PORT`
 - **Environment Variables**:
   - `VITE_API_BASE_URL`: Your backend API URL (update after deploy)
+  - `NODE_ENV`: production
 
 ### Firefox Container (`firefox-container`)
 - **Runtime**: Docker

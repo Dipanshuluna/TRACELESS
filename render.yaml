@@ -31,6 +31,8 @@ services:
     envVars:
       - key: VITE_API_BASE_URL
         value: https://traceless-backend.onrender.com/api
+      - key: NODE_ENV
+        value: production
     plan: starter
 
   # Firefox Container Service (Standalone web service)
@@ -43,8 +45,3 @@ services:
       - key: WEB_AUDIO
         value: "1"
     plan: starter
-
-# Environment variables that apply to all services
-envVars:
-  - key: NODE_ENV
-    value: production
