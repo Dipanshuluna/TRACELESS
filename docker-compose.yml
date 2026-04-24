@@ -1,45 +1,28 @@
-services:
-  firefox-container:
-    profiles:
-      - managed-firefox
-    build:
-      context: ./browser-container
-      dockerfile: Dockerfile
-    container_name: vw-firefox-container
-    ports:
-      - "3001:5800"
-    volumes:
-      - firefox-config:/config
-    shm_size: "1gb"
-    restart: unless-stopped
+version: "3.9"
 
+services:
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      VW_FRONTEND_ORIGIN: ${VW_FRONTEND_ORIGIN:-http://localhost:5174}
-      VW_ATTACHED_CONTAINER_NAME: ${VW_ATTACHED_CONTAINER_NAME:-firefox-container}
-      VW_BROWSER_URL: ${VW_BROWSER_URL:-http://host.docker.internal:3001}
+      VW_FRONTEND_ORIGIN: http://localhost:5173
+      VW_ATTACHED_CONTAINER_NAME: 11f95f71c741e6f55ed388049bac5742a45ba3f6f3d6b257e7e578c10dd342ec
+      VW_BROWSER_URL: http://localhost:3001
       VW_DOWNLOAD_DIR: /config/downloads
       VW_END_SESSION_STOPS_CONTAINER: "false"
     ports:
-      - "${VW_BACKEND_HOST_PORT:-5001}:5000"
+      - "3001:5800"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     environment:
-      VITE_API_BASE_URL: ${VW_API_BASE_URL:-http://localhost:5001/api}
+      VITE_API_BASE_URL: http://localhost:5000/api
     ports:
-      - "${VW_FRONTEND_HOST_PORT:-5174}:5173"
+      - "5173:5173"
     depends_on:
       - backend
-
-volumes:
-  firefox-config:
