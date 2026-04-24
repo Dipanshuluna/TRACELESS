@@ -8,8 +8,8 @@ def _csv_paths(value: str) -> tuple[str, ...]:
 
 @dataclass(slots=True)
 class Settings:
-    frontend_origin: str = os.getenv("VW_FRONTEND_ORIGIN", "http://localhost:5173")
-    browser_url: str = os.getenv("VW_BROWSER_URL", "http://localhost:3000")
+    frontend_origin: str = os.getenv("VW_FRONTEND_ORIGIN", "http://localhost:5176")
+    browser_url: str = os.getenv("VW_BROWSER_URL", "http://localhost:3001")
     attached_container_name: str = os.getenv("VW_ATTACHED_CONTAINER_NAME", "firefox-container")
     max_session_minutes: int = int(os.getenv("VW_MAX_SESSION_MINUTES", "240"))
     cleanup_interval_seconds: int = int(os.getenv("VW_CLEANUP_INTERVAL_SECONDS", "15"))

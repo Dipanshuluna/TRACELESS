@@ -20,7 +20,7 @@ Volatile Workspace is a full-stack mini operating system for temporary, containe
 
 - The backend attaches to a named localhost container, `firefox-container` by default.
 - Downloads are read from `/config/downloads` inside the container and never copied to the host permanently by the app.
-- Browser access is embedded from `http://localhost:3000` by default.
+- Browser access is embedded from `http://localhost:3001` by default.
 - Cleanup runs continuously in the backend and expires app sessions. By default it does not stop your existing Firefox container.
 
 ## Local Development
@@ -36,7 +36,7 @@ Volatile Workspace is a full-stack mini operating system for temporary, containe
 Expected defaults:
 
 - Container name: `firefox-container`
-- Browser URL: `http://localhost:3000`
+- Browser URL: `http://localhost:3001`
 - Downloads path: `/config/downloads`
 
 You can override these with:
@@ -57,6 +57,8 @@ pip install -r requirements.txt
 python app.py
 ```
 
+The local backend uses port `5100` by default.
+
 ### 3. Start the React frontend
 
 ```bash
@@ -65,9 +67,11 @@ npm install
 npm run dev
 ```
 
+The local frontend uses port `5176` by default.
+
 ### 4. Open the app
 
-Visit `http://localhost:5173`, enter a duration, and start the session. The React UI will embed your existing Firefox web UI and poll the attached container for downloads.
+Visit `http://localhost:5176`, enter a duration, and start the session. The React UI will embed your existing Firefox web UI and poll the attached container for downloads.
 
 ## Container Lifecycle
 
