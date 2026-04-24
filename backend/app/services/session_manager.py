@@ -153,6 +153,19 @@ class SessionManager:
     def end_session(self, session_id: str) -> bool:
         with self._lock:
             session = self._sessions.pop(session_id, None)
+            if session is None:
+                # Frontend may hold a stale session ID after backend restart/reload.
+                # Fallback to the currently active session so "End session" still works.
+                active_id = next(
+                    (
+                        sid
+                        for sid, record in self._sessions.items()
+                        if record.seconds_remaining() > 0
+                    ),
+                    None,
+                )
+                if active_id is not None:
+                    session = self._sessions.pop(active_id, None)
         if session is None:
             return False
         if self.settings.disable_docker:
@@ -238,9 +251,20 @@ class SessionManager:
 
     def _require_session(self, session_id: str) -> SessionRecord:
         session = self.get_session(session_id)
-        if session is None:
-            raise FileNotFoundError(f"unknown session {session_id}")
-        return session
+        if session is not None:
+            return session
+
+        # If the client has a stale session ID but there is exactly one active
+        # in-memory session, use it to keep file/browser APIs functional.
+        with self._lock:
+            active_session = next(
+                (record for record in self._sessions.values() if record.seconds_remaining() > 0),
+                None,
+            )
+        if active_session is not None:
+            return active_session
+
+        raise FileNotFoundError(f"unknown session {session_id}")
 
     def _remove_container(self, session: SessionRecord) -> None:
         gateway = self._require_gateway()
