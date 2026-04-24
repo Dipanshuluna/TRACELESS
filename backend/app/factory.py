@@ -11,7 +11,12 @@ def create_app() -> Flask:
     app = Flask(__name__)
     settings = Settings()
     app.config["SETTINGS"] = settings
-    CORS(app, resources={r"/api/*": {"origins": settings.frontend_origin}})
+    allowed_origins: str | list[str]
+    if settings.frontend_origins:
+        allowed_origins = list(settings.frontend_origins)
+    else:
+        allowed_origins = settings.frontend_origin
+    CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
 
     session_manager = SessionManager(settings=settings)
     session_manager.start_cleanup_loop()
