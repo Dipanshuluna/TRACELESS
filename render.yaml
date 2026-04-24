@@ -4,14 +4,14 @@ services:
     name: traceless-backend
     runtime: python3
     buildCommand: "cd backend && pip install -r requirements.txt"
-    startCommand: "cd backend && gunicorn --bind 0.0.0.0:$PORT app:app"
+    startCommand: "cd backend && gunicorn --bind 0.0.0.0:$PORT app.factory:create_app()"
     envVars:
       - key: VW_FRONTEND_ORIGIN
         value: https://traceless-frontend.onrender.com
       - key: VW_ATTACHED_CONTAINER_NAME
         value: firefox-container
       - key: VW_BROWSER_URL
-        value: http://localhost:3000
+        value: https://firefox-container.onrender.com
       - key: VW_DOWNLOAD_DIR
         value: /tmp/downloads
       - key: VW_MAX_SESSION_MINUTES
@@ -20,6 +20,8 @@ services:
         value: "true"
       - key: VW_RESET_PATHS
         value: /tmp/downloads
+      - key: VW_DISABLE_DOCKER
+        value: "true"
     plan: starter
 
   # Frontend Service

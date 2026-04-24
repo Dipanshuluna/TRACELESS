@@ -18,9 +18,10 @@ class Settings:
     end_session_stops_container: bool = (
         os.getenv("VW_END_SESSION_STOPS_CONTAINER", "false").lower() == "true"
     )
+    disable_docker: bool = os.getenv("VW_DISABLE_DOCKER", "false").lower() == "true"
     reset_paths: tuple[str, ...] = _csv_paths(
         os.getenv(
             "VW_RESET_PATHS",
-            "/config/downloads,/config/profile,/config/.mozilla",
+            "/config/downloads",
         )
     )

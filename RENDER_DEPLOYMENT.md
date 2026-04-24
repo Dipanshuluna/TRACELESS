@@ -11,10 +11,11 @@
 ### Backend Service (`traceless-backend`)
 - **Runtime**: Python 3
 - **Build**: `cd backend && pip install -r requirements.txt`
-- **Start**: `cd backend && gunicorn --bind 0.0.0.0:$PORT app:app`
+- **Start**: `cd backend && gunicorn --bind 0.0.0.0:$PORT app.factory:create_app()`
 - **Environment Variables**:
   - `VW_FRONTEND_ORIGIN`: Your frontend URL (update after deploy)
   - `VW_BROWSER_URL`: Firefox container URL (update after deploy)
+  - `VW_DISABLE_DOCKER`: `true` on Render
   - `VW_DOWNLOAD_DIR`: `/tmp/downloads` (ephemeral storage)
 
 ### Frontend Service (`traceless-frontend`)
@@ -51,6 +52,7 @@ After deployment, update these URLs in your Render dashboard:
 # Backend service environment variables
 VW_FRONTEND_ORIGIN=https://your-frontend-app.onrender.com
 VW_BROWSER_URL=https://your-firefox-container.onrender.com
+VW_DISABLE_DOCKER=true
 
 # Frontend service environment variables
 VITE_API_BASE_URL=https://your-backend-app.onrender.com/api

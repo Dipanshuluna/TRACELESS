@@ -76,6 +76,9 @@ export default function App() {
         z: zRef.current
       }
     }));
+    if (windowId === "files") {
+      refreshFiles();
+    }
   };
 
   const openEditor = () => {
@@ -268,6 +271,14 @@ export default function App() {
   }, []);
 
   useEffect(() => closeEventStream, []);
+
+  useEffect(() => {
+    if (!session?.session_id) return;
+    const intervalId = window.setInterval(() => {
+      refreshFiles(session.session_id);
+    }, 4000);
+    return () => window.clearInterval(intervalId);
+  }, [session?.session_id]);
 
   if (!session) {
     return <SessionLauncher onStart={startSession} isLoading={isStarting} error={error} />;
